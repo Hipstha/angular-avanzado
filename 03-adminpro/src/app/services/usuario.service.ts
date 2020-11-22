@@ -7,29 +7,42 @@ import { Router } from '@angular/router';
 
 import { LoginForm } from '../interfaces/login-form.interface';
 import { RegisterForm } from '../interfaces/register-form.interface';
+import { Usuario } from '../models/usuario.model';
 
 const base_url = environment.base_url;
 declare const gapi: any;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UsuarioService {
-
   public auth2: any;
+  public usuario: Usuario;
 
-  constructor( private http: HttpClient, private router: Router, private ngZone: NgZone ) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private ngZone: NgZone
+  ) {
     this.googleInit();
   }
 
-  googleInit() {
+  get token(): string {
+    return localStorage.getItem('token') || '';
+  }
 
-    return new Promise(resolve => {
+  get uid(): string {
+    return this.usuario.uid || '';
+  }
+
+  googleInit() {
+    return new Promise((resolve) => {
       gapi.load('auth2', () => {
         // Retrieve the singleton for the GoogleAuth library and set up the client.
         this.auth2 = gapi.auth2.init({
-          client_id: '53568048550-hgk9q4ecb1cqokljk08jbt1oqk5m2mt4.apps.googleusercontent.com',
-          cookiepolicy: 'single_host_origin'
+          client_id:
+            '53568048550-hgk9q4ecb1cqokljk08jbt1oqk5m2mt4.apps.googleusercontent.com',
+          cookiepolicy: 'single_host_origin',
         });
         resolve();
       });
@@ -47,46 +60,58 @@ export class UsuarioService {
   }
 
   validarToken(): Observable<boolean> {
-    const token = localStorage.getItem('token') || '';
+    return this.http
+      .get(`${base_url}/login/renew`, {
+        headers: {
+          'x-token': this.token,
+        },
+      })
+      .pipe(
+        map((resp: any) => {
+          const { email, google, nombre, role, uid, img = '' } = resp.usuarioDB;
+          this.usuario = new Usuario(nombre, email, '', img, google, uid, role);
+          localStorage.setItem('token', resp.token);
+          return true;
+        }),
+        catchError((error) => {
+          return of(false);
+        })
+      );
+  }
 
-    return this.http.get(`${ base_url }/login/renew`, {
-      headers: {
-        'x-token': token
-      }
-    }).pipe(
-      tap( (resp: any) => {
+  public crearUsuario(formData: RegisterForm) {
+    return this.http.post(`${base_url}/usuarios`, formData).pipe(
+      tap((resp: any) => {
         localStorage.setItem('token', resp.token);
-      }),
-      map( resp => true),
-      catchError( error => of(false) )
+      })
     );
-
   }
 
-  public crearUsuario( formData: RegisterForm ) {
-    return this.http.post(`${ base_url }/usuarios`, formData )
-      .pipe(
-        tap( (resp: any) => {
-          localStorage.setItem('token', resp.token);
-        })
-      );
+  actualizarPerfil(data: { email: string; nombre: string; role: string }) {
+    data = {
+      ...data,
+      role: this.usuario.role,
+    };
+    return this.http.put(`${base_url}/usuarios/${this.uid}`, data, {
+      headers: {
+        'x-token': this.token,
+      },
+    });
   }
 
-  public login( formData: LoginForm ) {
-    return this.http.post(`${ base_url }/login`, formData )
-      .pipe(
-        tap( (resp: any) => {
-          localStorage.setItem('token', resp.token);
-        })
-      );
+  public login(formData: LoginForm) {
+    return this.http.post(`${base_url}/login`, formData).pipe(
+      tap((resp: any) => {
+        localStorage.setItem('token', resp.token);
+      })
+    );
   }
 
-  public loginGoogle( token ) {
-    return this.http.post(`${ base_url }/login/google`, { token } )
-      .pipe(
-        tap( (resp: any) => {
-          localStorage.setItem('token', resp.token);
-        })
-      );
+  public loginGoogle(token) {
+    return this.http.post(`${base_url}/login/google`, { token }).pipe(
+      tap((resp: any) => {
+        localStorage.setItem('token', resp.token);
+      })
+    );
   }
 }

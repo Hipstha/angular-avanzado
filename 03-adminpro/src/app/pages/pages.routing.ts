@@ -8,25 +8,47 @@ import { AccountSettingsComponent } from './account-settings/account-settings.co
 import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 import { AuthGuard } from '../guards/auth.guard';
+import { PerfilComponent } from './perfil/perfil.component';
 
 const routes: Routes = [
-    { 
-        path: 'dashboard',
-        component: PagesComponent,
-        canActivate: [ AuthGuard ],
-        children: [
-            { path: '', component: DashboardComponent, data: { title: 'Dashboard' } },
-            { path: 'progress', component: ProgressComponent, data: { title: 'ProgressBar' } },
-            { path: 'grafica1', component: Grafica1Component, data: { title: 'Gráfica #1' } },
-            { path: 'account-settings', component: AccountSettingsComponent, data: { title: 'Ajustes de cuenta' } },
-            { path: 'promesas', component: PromesasComponent, data: { title: 'Promesas' } },
-            { path: 'rxjs', component: RxjsComponent, data: { title: 'Rxjs' } }
-        ]
-    }
+  {
+    path: 'dashboard',
+    component: PagesComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: '', component: DashboardComponent, data: { title: 'Dashboard' } },
+      {
+        path: 'progress',
+        component: ProgressComponent,
+        data: { title: 'ProgressBar' },
+      },
+      {
+        path: 'grafica1',
+        component: Grafica1Component,
+        data: { title: 'Gráfica #1' },
+      },
+      {
+        path: 'account-settings',
+        component: AccountSettingsComponent,
+        data: { title: 'Ajustes de cuenta' },
+      },
+      {
+        path: 'promesas',
+        component: PromesasComponent,
+        data: { title: 'Promesas' },
+      },
+      { path: 'rxjs', component: RxjsComponent, data: { title: 'Rxjs' } },
+      {
+        path: 'perfil',
+        component: PerfilComponent,
+        data: { title: 'Perfil de usuario' },
+      },
+    ],
+  },
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
 export class PagesRoutingModule {}
