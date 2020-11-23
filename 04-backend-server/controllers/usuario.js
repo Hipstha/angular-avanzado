@@ -7,7 +7,7 @@ const usuario = require("../models/usuario");
 
 const getUsuarios = async (req, res) => {
   const desde = Number(req.query.desde) || 0;
-  const hasta = Number(req.query.desde) || 5;
+  const hasta = Number(req.query.hasta) || 5;
 
   // const usuario = await Usuario
   //     .find({}, 'nombre email role google')
