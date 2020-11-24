@@ -15,6 +15,10 @@ import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { UsuariosComponent } from './mantenimientos/usuarios/usuarios.component';
+import { HospitalesComponent } from './mantenimientos/hospitales/hospitales.component';
+import { DoctoresComponent } from './mantenimientos/doctores/doctores.component';
+import { PipesModule } from '../pipes/pipes.module';
+import { DoctorComponent } from './mantenimientos/doctores/doctor.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +31,9 @@ import { UsuariosComponent } from './mantenimientos/usuarios/usuarios.component'
     RxjsComponent,
     PerfilComponent,
     UsuariosComponent,
+    HospitalesComponent,
+    DoctoresComponent,
+    DoctorComponent,
   ],
   exports: [
     DashboardComponent,
@@ -42,6 +49,7 @@ import { UsuariosComponent } from './mantenimientos/usuarios/usuarios.component'
     SharedModule,
     RouterModule,
     ComponentsModule,
+    PipesModule,
   ],
 })
 export class PagesModule {}

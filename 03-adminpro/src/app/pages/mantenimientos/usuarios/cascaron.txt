@@ -47,7 +47,7 @@
                 <td>July 11, 2015</td>
                 <td>July 11, 2015</td>
                 <td>July 11, 2015</td>
-                <td class="text-nowrap">
+                <td class="text-nowrap text-center">
                   <a
                     href="#"
                     data-toggle="tooltip"
